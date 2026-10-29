@@ -1,0 +1,38 @@
+---
+description: Back-end layout and import boundaries
+globs: ["apps/**", "internal/**", "pkg/**"]
+alwaysApply: false
+---
+- apps/<module>/* imports only internal/<same module>, pkg/lib, pkg/common, pkg/contracts/<module>.
+- internal/<module>/* never imports another module's internal; cross-module = pkg/lib/invoke (Dapr) or pkg/lib/events (bus).
+- pkg/lib/* imports only pkg/lib and pkg/common; pkg/common and pkg/contracts import nothing internal.
+- main.go wires config → log → obs → db → bus → router and nothing else.
+- New event: constant in pkg/common/events.go + subscription row per consumer + /events/<type> handler + EVENTS.md row in the pack.
+- New route: OpenAPI first (/HOSPACK/HOS/<MODULE>/spec/openapi), `make codegen`, then the handler; scopes from AUTH-TENANCY.
+- New table: next migration number from /HOSPACK/HOS/schema/MIGRATIONS.md, RLS through txn, pkg/common/models append.
+
+## Layout (imports flow downward only)
+
+```
+apps/<module>/<process>/   one main.go per process + lock-unit sub-folders   (module ∈ loom, swatch, rubric, core; `app` is owned by the HOS-UI program — its pack is `HOS-UI/`, its direction: the HOS-UI program page `.cursor/rules/02-program-hosui.mdc`)
+internal/<module>/<pkg>/   module-private domain code — never imported by another module
+pkg/lib/<lib>/             platform libraries used by ≥ 2 modules (token, auth, events, bus, invoke, obs, log, config, httpx, httpserver, tenancy, dbx, objstore, llm, embed, dlp, …)
+pkg/common/                enums, error codes, event constants, models — APPEND-ONLY files
+pkg/contracts/<module>/    openapi.yaml + generated types — never hand-edited (run `make codegen`)
+migrations/ deploy/ scripts/ fixtures/ tools/ test/ docs/
+```
+
+`apps → internal/<own module>, pkg/*` · `internal/<module> → same module, pkg/*` · `pkg/lib → pkg/lib, pkg/common` · `pkg/common, pkg/contracts → nothing`.
+Cross-module calls are Dapr service invocation (`pkg/lib/invoke`) or bus events (`pkg/lib/events`) — never an import, never raw HTTP to a service port.
+
+## Rules that never bend
+
+- `main.go` only wires config → log → obs → db → bus → router (`pkg/lib/httpserver.NewGateway` / `NewWorker`); business code in sub-folders.
+- Bearer via `pkg/lib/token.UnpackToken`; scope tid/pid/sid from Claims, never from a body; ingest requires all three.
+- One `Problem` shape; `bearer` scheme; routes under exactly one `/v1/<area>/**` per gateway; contract first (OpenAPI in `/HOSPACK/HOS/<MODULE>/spec/openapi`).
+- Events: explicit subscription rows, `/events/<type>` handlers, idempotent, no wildcard; every new event has a six-column row in the module's EVENTS.md.
+- Every scoped table hangs off `txn` (RLS `txn_iso`); tenants/programs/LOBs are created only by core-api; sentinel `*`.
+- Config keys registered in `pkg/lib/config` and documented; no secret values in git; stub tokens refused outside dev/ci.
+- Vendors behind interfaces with fakes (llm, embed, media, objstore); tests never call a vendor.
+- Tests named after acceptance criteria (`Test_<ID>_AC1`); `make test lint spec-lint` green before the PR.
+- Never add code that depends on the GOD token (`GOD-TOKEN(Q-31)` fence; C-70 removes it).

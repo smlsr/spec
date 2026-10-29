@@ -1,0 +1,28 @@
+---
+description: Program page for a HOS ticket (prefixes C-, D-, F-, I-, L-, O-, P-, R-, S-, U-, M-01…M-07): standing law, owned folders, how a ticket is done, and the program preamble HOSPACK/HOS/spec/CURSOR_PREAMBLE.md — scoped to HOS's folders
+globs: ["apps/web/workbench/src/routes/*.tsx", "apps/web/workbench/src/routes/{query,item,items,sets,catalog,topics,watchers,ingest,spine,graph,plan,qa,swatch}/**", "apps/web/workbench/src/modules/{query,item,sets,catalog,topics,watchers,ingest,graph,plan,qa,swatch}/**", "apps/web/workbench/src/{app,lib,api}/**", "packages/**", "services/**", "tooling/**", "apps/web/workbench/src/routes/rubrics*", "apps/web/workbench/src/routes/rubrics/**", "apps/web/workbench/src/modules/rubrics/**", "apps/web/workbench/src/api/rubric-*.ts", "packages/ui/src/rubric/**", "packages/contracts/rubric/**", "packages/api/rubric.ts", "packages/rubric-score/**", "apps/web/workbench/src/routes/control*", "apps/web/workbench/src/routes/control/**", "apps/web/workbench/src/routes/login*", "apps/web/workbench/src/modules/control/**", "apps/web/workbench/src/api/core-*.ts", "packages/ui/src/control/**", "packages/contracts/core/**", "packages/api/core.ts", "packages/cares-score/**"]
+alwaysApply: false
+---
+# HOS program page — applies when your ticket belongs to HOS
+
+## Standing law
+
+You are working in `HumanifyOS-UI`. The complete specification of what you build lives in the `HOSPACK/HOS/` tree at the root of this
+repository (the HOSPACK/HOS build pack, mounted as a submodule or copy; `HOSPACK/` = HOS + HOS-UI + HOS-Admin, three programs side by side): `HOSPACK/HOS/<MODULE>/spec/**` (freeze, architecture, schema + SQL,
+OpenAPI, events, config keys, auth/tenancy, processes, fixtures, screens), `HOSPACK/HOS/api/`, `HOSPACK/HOS/schema/`, `HOSPACK/HOS/JIRA_IMPORT.json`
+(every ticket), `HOSPACK/HOS/plan/BUILD_MAP.html` (what runs now). Nothing is designed in chat: if a contract, table, event, key, route or
+screen is not in `HOSPACK/HOS/`, it does not exist yet — say so instead of inventing it.
+
+## Folders HOS owns in `HumanifyOS-UI`
+
+everything not carved out below — `apps/web/workbench`, `packages/{api,features,ui,platform,contracts,testing}` (outside the HOS-UI / HOS-Admin sub-folders), `services/`, `tooling/`.
+
+## How a HOS ticket is done
+
+1. The ticket is `HOSPACK/HOS/JIRA_IMPORT.json` → `projects[0].issues[externalId == <ID>]`; touch only its lock units; PR body = RESULT.json.
+2. Module preambles: LOOM's base `HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md` for every HOS ticket, plus RUBRIC's or CORE's for R- / C- tickets — attached by the `2x-<module>.mdc` rules (Cursor) and the module folders' `CLAUDE.md` (Claude Code); the program preamble is attached below.
+3. Contracts: `HOSPACK/HOS/<MODULE>/spec/openapi/` first, then `pnpm codegen`, then the code.
+4. Before the PR: `pnpm codegen && pnpm typecheck && pnpm lint && pnpm test`.
+5. Skill `.claude/skills/hos-frontend/SKILL.md` explains how to add things the HOSPACK/HOS way and which commands to run.
+
+@HOSPACK/HOS/spec/CURSOR_PREAMBLE.md

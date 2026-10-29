@@ -1,0 +1,34 @@
+---
+description: Use when adding or changing a table, column, index, migration or RLS policy — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Schema
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Schema
+
+One migration ledger across modules: take the next free number, RLS through `txn`, append `pkg/common/models`, add the SCHEMA.md row in the pack.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Schema
+
+One migration ledger across modules: take the next free number, RLS through `txn`, append `pkg/common/models`, add the SCHEMA.md row in the pack. HOSPACK/HOS-UI owns only 0017–0021 + 0026 (`app_*` / `app_*` tables) on top of the HOS ledger (which reserves the block); the platform ledger is read-only.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Schema
+
+One migration ledger across modules: take the next free number, RLS through `txn`, append `pkg/common/models`, add the SCHEMA.md row in the pack. HOSPACK/HOS-Admin owns only 0030–0039 (`admin_*` / `adm_*` tables) on top of the HOS ledger (which reserves the block); the platform ledger is read-only.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/schema/MIGRATIONS.md
+@HOSPACK/HOS/schema/TABLES.md
+@HOSPACK/HOS-UI/schema/MIGRATIONS.md
+@HOSPACK/HOS-UI/schema/TABLES.md
+@HOSPACK/HOS-Admin/schema/MIGRATIONS.md
+@HOSPACK/HOS-Admin/schema/TABLES.md

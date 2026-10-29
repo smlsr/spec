@@ -1,0 +1,34 @@
+---
+description: Use when adding or changing an HTTP route, request/response schema or OpenAPI operation — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Contracts
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Contracts
+
+Contract first: edit the module's `HOSPACK/HOS/<MODULE>/spec/openapi/*.yaml` through the pack, regenerate (`make codegen` / `pnpm codegen`), then implement. One `Problem` shape, `bearer` scheme, one `/v1/<area>` per gateway, ports from PORTS.md.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Contracts
+
+Contract first: edit the module's `HOSPACK/HOS-UI/<MODULE>/spec/openapi/*.yaml` through the pack, regenerate (`make codegen` / `pnpm codegen`), then implement. One `Problem` shape, `bearer` scheme, one `/v1/<area>` per gateway, ports from PORTS.md.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Contracts
+
+Contract first: edit the module's `HOSPACK/HOS-Admin/<MODULE>/spec/openapi/*.yaml` through the pack, regenerate (`make codegen` / `pnpm codegen`), then implement. One `Problem` shape, `bearer` scheme, one `/v1/<area>` per gateway, ports from PORTS.md.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/api/README.md
+@HOSPACK/HOS/api/PORTS.md
+@HOSPACK/HOS-UI/api/README.md
+@HOSPACK/HOS-UI/api/PORTS.md
+@HOSPACK/HOS-Admin/api/README.md
+@HOSPACK/HOS-Admin/api/PORTS.md

@@ -1,0 +1,18 @@
+---
+description: RUBRIC module preamble and rules for its folders
+globs: ["apps/rubric/**", "internal/rubric/**", "pkg/contracts/rubric/**", "migrations/002[2-5]*"]
+alwaysApply: false
+---
+# RUBRIC module preamble (attached by path)
+
+These folders belong to the **RUBRIC** module. Its preamble is attached below — it is the module's own rules on top of the
+program preamble (and, for every module but LOOM, on top of LOOM's base preamble, attached last). When a rule here contradicts a
+general one, the module rule is more specific, never contradictory: follow it.
+
+Where to look (never invent): `HOSPACK/HOS/RUBRIC/spec/00-FREEZE.md` (decisions), `HOSPACK/HOS/RUBRIC/spec/openapi/` (the contract — change it
+first, then `make codegen` / `pnpm codegen`), `HOSPACK/HOS/RUBRIC/spec/sql/` + `SCHEMA.md` (tables), `HOSPACK/HOS/RUBRIC/spec/EVENTS.md` (events),
+`HOSPACK/HOS/RUBRIC/spec/CONFIG-KEYS.md` (keys), `HOSPACK/HOS/RUBRIC/spec/AUTH-TENANCY.md` (routes → scopes), `HOSPACK/HOS/RUBRIC/spec/FIXTURES.md` + `fixtures/`
+(test data), `HOSPACK/HOS/RUBRIC/spec/SCREENS.md` + `HOSPACK/HOS/RUBRIC/ui/` (mocks and shots).
+
+@HOSPACK/HOS/RUBRIC/spec/CURSOR_PREAMBLE.md
+@HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md

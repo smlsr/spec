@@ -1,0 +1,50 @@
+---
+description: Front-end platform boundaries and stack
+globs: ["apps/**", "packages/**", "services/**"]
+alwaysApply: false
+---
+- Imports flow downward only: app → features, api, ui, contracts, platform · features → api, ui, contracts, platform · api → contracts, platform · ui → platform · contracts → platform · platform → nothing internal.
+- `packages/ui/**` never imports contracts, transport or auth. `packages/contracts/<module>/` is generated from /HOS OpenAPI — run `pnpm codegen`, never edit the generated files; refinements (`.refine()`, `.transform()`, brands) go in `packages/contracts/<module>/refine.ts` and are exported through the same subpath (Q-42).
+- Server state: TanStack Query (keys by resource). URL state: TanStack Router search params. Client state: Zustand from factories. Forms: TanStack Form + Zod.
+- Routes in `src/routes/` stay thin and compose `src/modules/<feature>`; `src/api/<resource>.ts` mirrors `packages/contracts`.
+- React 19 with the React Compiler: no manual useMemo/useCallback unless a profile shows the need.
+- shadcn components are vendored in `packages/ui` on Base UI with the Tailwind v4 preset; apps never copy components.
+- Telemetry only through `packages/platform/telemetry`. New dependencies only through the pnpm catalog.
+
+## Layout (imports flow downward only)
+
+```
+apps/web/<app>            Vite + React 19 (React Compiler) + TanStack Router SPA        — workbench (HOS); quality is owned by the HOS-UI program (pack `HOS-UI/`, direction: the HOS-UI program page `.cursor/rules/02-program-hosui.mdc`)
+apps/extensions/<name>    WXT + React (none yet)
+packages/features         screens/components used by more than one app
+packages/api              TanStack Query queries, mutations, keys — one file per API resource
+packages/ui               vendored shadcn on Base UI, tokens, Tailwind v4 preset (never copy a component into an app)
+packages/contracts        Zod schemas GENERATED from /HOSPACK/HOS/<MODULE>/spec/openapi/*.yaml — never hand-edit the generated files; run `pnpm codegen`.
+                          Hand-written refinements live beside them in packages/contracts/<module>/refine.ts (Q-42): `.refine()`/`.transform()`/brands
+                          over the generated schemas, exported through the same subpath; never a parallel hand-written schema
+packages/platform         http (fetch + token provider injected), auth core + adapters, telemetry (OTel wrapper), flags, result, utils
+packages/testing          MSW handlers + fixtures (mirrors /HOSPACK/HOS/*/spec/fixtures)
+services/mock-api         local API for dev and e2e
+tooling                   tsconfig, eslint, tailwind preset, vite preset
+```
+
+Inside an app: `src/routes/` (thin, file-based) · `src/api/<resource>.ts` · `src/modules/<feature>/{components,model}` · `src/app/` · `src/lib/`.
+
+Dependency rules: `app → features, api, ui, contracts, platform` · `features → api, ui, contracts, platform` · `api → contracts, platform` ·
+`ui → platform (tokens/utils only)` · `contracts → platform (result/utils only)` · `platform → nothing internal`. Subpath exports, no barrels.
+
+## State
+
+Server state = TanStack Query (keys by resource, per-user cache cleared on logout). URL state = TanStack Router search params
+(filters, tabs, pagination, selection). Client state = Zustand stores from factories, feature-scoped. Forms = TanStack Form + Zod.
+Nothing Query owns goes in Zustand; nothing the URL should own goes in either.
+
+## HOS rules that never bend
+
+- Every API call goes through `packages/platform/http` with the Bearer token; the token's scope (Client · Program · LOB) is displayed, never widened.
+- Errors are the one `Problem` shape `{error, code, message, pointer?, details?}`: 401 → token screen, 403 → "Not permitted", 404 → "Not in your scope", 429 → countdown.
+- `X-HOS-Stub` fields render the `Unavailable` atom; never a literal `-1`.
+- Channels come from `GET /v1/registry/channels` (never an enum). Item metadata is read-only in Quality, editable in Workbench under `items:write_meta`.
+- Build to the mock named on the ticket's first line (`**UI screen:** /HOSPACK/HOS/<MODULE>/ui/…`); the shots are the visual baseline.
+- Tests: Vitest + Testing Library + MSW for every module; Playwright only in the live-smoke slots. Every acceptance criterion is a named test.
+- No new dependency without a pnpm catalog entry. No vendor telemetry SDK outside `packages/platform/telemetry`.

@@ -1,0 +1,26 @@
+---
+description: Ticket protocol: how to pick up a HOSPACK ticket (HOS, HOS-UI or HOS-Admin) by id and finish it with a RESULT.json PR
+alwaysApply: false
+---
+# Ticket protocol (invoke with @40-ticket, or just give the ticket id)
+
+`<pack>` below is the pack of the program that owns the ticket — router:
+
+| Ticket prefix | Program | `<pack>` | Ticket file | Program page | Examples |
+|---|---|---|---|---|---|
+| C-, D-, F-, I-, L-, O-, P-, R-, S-, U-, M-01…M-07 | HOS | `HOSPACK/HOS` | `HOSPACK/HOS/JIRA_IMPORT.json` (or `HOSPACK/HOS/JIRA_IMPORT_ALL.json`) | `.cursor/rules/02-program-hos.mdc` | `L-10`, `R-19`, `C-49` |
+| A-, Q-, X-, M-20…M-24, M-26 | HOS-UI | `HOSPACK/HOS-UI` | `HOSPACK/HOS-UI/JIRA_IMPORT.json` (or `HOSPACK/HOS/JIRA_IMPORT_ALL.json`) | `.cursor/rules/02-program-hosui.mdc` | `A-01`, `Q-05`, `X-06` |
+| AD-, AM-, AR-, AU-, AX- | HOS-Admin | `HOSPACK/HOS-Admin` | `HOSPACK/HOS-Admin/JIRA_IMPORT.json` (or `HOSPACK/HOS/JIRA_IMPORT_ALL.json`) | `.cursor/rules/02-program-hosadmin.mdc` | `AD-01`, `AU-10`, `AX-06` |
+
+1. Find the ticket: `<pack>/JIRA_IMPORT.json` → `projects[0].issues[]` where `externalId` is the id (e.g. the examples of your program in the router above).
+   The description carries Why, What, every acceptance criterion, lock units, API/migration/config footers, the UI screen and links.
+2. Read every `<pack>/...` link in it — and, for a HOS-UI or HOS-Admin ticket, every `HOSPACK/HOS/...` link — before coding. The lock units (`*Lock units:*`) are the only folders you may change; append-only
+   shared files may gain lines. `*Blocked by:*` tickets are already merged when you are asked to start — do not wait on them.
+3. Branch, PR title, commit trailer, merging and the Jira flow: `AGENTS.md` common law.
+4. One named test per acceptance criterion (`AC-1 …` in Vitest); fakes for vendors; stub tokens.
+5. Before the PR run `pnpm codegen && pnpm typecheck && pnpm lint && pnpm test`. Fix boundary-lint errors by moving code, never by disabling the rule.
+6. PR body = `RESULT.json`: `{"ticket": "<ID>", "tests": [...], "files": [...], "notDone": [...], "notes": "..."}`. Merging, the Jira flow and parking are the orchestrator's (`AGENTS.md` common law).
+7. If the ticket and the spec disagree, the spec in `<pack>/` wins; say so in `notes` and build to the spec.
+8. Append-only shared files (the LOOM preamble §3 list for this repository: the `pnpm-workspace.yaml` catalog, `packages/ui/src/tokens/tokens.css`,
+   `CHANGELOG.md` — one `- [<ID>] <summary>` line under Unreleased) gain lines, never lose them. Your `Test command:` must be green on the
+   rebased head with msw fixtures alone, without another lane's process; a live BFF or stack is a gate check, not a ticket test.

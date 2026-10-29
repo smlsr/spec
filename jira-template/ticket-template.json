@@ -1,0 +1,320 @@
+{
+  "projectKey": "HOS",
+  "defaultIssueType": "Story",
+  "defaultLabels": [
+    "humanifyos"
+  ],
+  "source": {
+    "prdTitle": "<pack title>",
+    "prdVersion": "<version>",
+    "generatedAt": "<date>"
+  },
+  "tickets": [
+    {
+      "tempId": "XX-00",
+      "summary": "<the blocker ticket>",
+      "issueType": "Story",
+      "priority": "High",
+      "labels": [
+        "module:<module>",
+        "size:M",
+        "gate:G1",
+        "lane:<lane>"
+      ],
+      "layer": "ui",
+      "systems": [
+        {
+          "system": "<RepoName>",
+          "component": "<folder this ticket owns>"
+        }
+      ],
+      "areasProposed": [
+        "<area>"
+      ],
+      "forgeRepo": "<RepoName>",
+      "forgeMode": "feature",
+      "parentTempId": null,
+      "blockedByTempIds": [],
+      "why": "40–150 words. The consequence of NOT building this: what breaks, who is blocked, which acceptance query fails, which later ticket cannot start. Write it so an agent choosing between two reasonable implementations knows which one serves the product. Name the user, the screen or the flow, and the spec section this implements.",
+      "what": "60+ words with numbered deliverables and exact names.\n\nDeliver `<exact/folder/>` + `<exact/file.ts>`:\n1. `<component or handler>` bound to `GET /v1/<area>/<resource>` (`<operationId>`), first paint from `<fixture>`.\n2. Clickables: `<element>` opens `<dialog>`; `<card>` navigates to `/<route>?<params>` (rule 45-ui-clicks: one test each).\n3. Empty, loading, error and forbidden states with the exact copy from SCREENS.md.\n4. Events: on `<event.type.v1>` invalidate `<query key>`.\n5. `README.md` in the module folder; docs/user/<app>/<page>.md updated.",
+      "outOfScope": [
+        "<what a nearby ticket owns instead, by id>"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-1",
+          "kind": "happy",
+          "text": "Given <fixture file and route>, when <the user does X / the call is made>, then <exact visible result or response, with real values>; clicking <element> navigates to <exact path and params>."
+        },
+        {
+          "id": "AC-2",
+          "kind": "edge",
+          "text": "Given <empty data / boundary value>, then <exact empty-state copy or clamped behaviour>."
+        },
+        {
+          "id": "AC-3",
+          "kind": "negative",
+          "text": "Given <wrong role / wrong tenant / 503 upstream>, then <403 / 404 / fallback copy> and <what must NOT happen>."
+        },
+        {
+          "id": "AC-4",
+          "kind": "happy",
+          "text": "Test command: `<one command that must exit 0, e.g. pnpm --filter <app> test -- <module>>`"
+        }
+      ],
+      "nfrs": [
+        {
+          "id": "NFR-1",
+          "text": "<p95 latency / bundle size / a11y target>"
+        }
+      ],
+      "technicalDetails": {
+        "services": [
+          "<lock unit folder 1>",
+          "<lock unit file 2>"
+        ],
+        "apiContract": "GET /v1/<area>/<resource> (<operationId>)",
+        "dataMigration": "none | NNNN_<name>.sql",
+        "idempotency": "<key, or n/a (read-only)>",
+        "configKeys": [
+          "<KEY_NAME from CONFIG-KEYS.md>"
+        ],
+        "vendors": [
+          "<library>"
+        ],
+        "implementerNotes": "Decisions the agent must not re-open, traps seen before, which shared files are append-only."
+      },
+      "featureFlag": null,
+      "releaseNotes": {
+        "title": "<short>",
+        "description": "<= 280 chars",
+        "impacts": [
+          "<impact>"
+        ],
+        "audience": "internal",
+        "visibility": "silent"
+      },
+      "userInterface": {
+        "screens": [
+          "<PACK>/ui/screens/<id>-<slug>.png"
+        ],
+        "routes": [
+          "/<route>"
+        ],
+        "designLink": "<PACK>/ui/screens/<id>-<slug>.html",
+        "states": [
+          "loading",
+          "empty",
+          "error",
+          "forbidden"
+        ],
+        "accessibility": "axe: zero violations; keyboard reachable",
+        "browsers": [
+          "chromium"
+        ],
+        "visualBaseline": "<PACK>/ui/screens/<id>-<slug>.png within 5%"
+      },
+      "logging": {
+        "events": [
+          {
+            "name": "<event>",
+            "level": "info",
+            "when": "<when>",
+            "fields": [
+              "tenant_id",
+              "request_id"
+            ]
+          }
+        ],
+        "requiredFieldsEveryLine": [
+          "tenant_id",
+          "request_id"
+        ],
+        "neverLog": [
+          "tokens",
+          "PII"
+        ]
+      },
+      "environment": {
+        "name": "local data mode (msw) / compose",
+        "testData": "<fixtures/data/<file>.json>"
+      },
+      "dependenciesRisks": {
+        "dependsOn": [
+          "XX-00"
+        ],
+        "risks": "<risk>",
+        "rollback": "<how to back it out>"
+      },
+      "notes": "Two-zone layout: <PACK>/ is read-only; code at the repo root. Start the agent with: Implement XX-01.",
+      "links": [
+        {
+          "title": "CURSOR_PREAMBLE.md",
+          "url": "<PACK>/spec/CURSOR_PREAMBLE.md"
+        },
+        {
+          "title": "SCREENS.md",
+          "url": "<PACK>/spec/SCREENS.md"
+        },
+        {
+          "title": "openapi",
+          "url": "<PACK>/spec/openapi/<area>.yaml"
+        }
+      ]
+    },
+    {
+      "tempId": "XX-01",
+      "summary": "<= 80 chars: what this ticket delivers, in the product's own words",
+      "issueType": "Story",
+      "priority": "High",
+      "labels": [
+        "module:<module>",
+        "size:M",
+        "gate:G1",
+        "lane:<lane>"
+      ],
+      "layer": "ui",
+      "systems": [
+        {
+          "system": "<RepoName>",
+          "component": "<folder this ticket owns>"
+        }
+      ],
+      "areasProposed": [
+        "<area>"
+      ],
+      "forgeRepo": "<RepoName>",
+      "forgeMode": "feature",
+      "parentTempId": null,
+      "blockedByTempIds": [
+        "XX-00"
+      ],
+      "why": "40–150 words. The consequence of NOT building this: what breaks, who is blocked, which acceptance query fails, which later ticket cannot start. Write it so an agent choosing between two reasonable implementations knows which one serves the product. Name the user, the screen or the flow, and the spec section this implements.",
+      "what": "60+ words with numbered deliverables and exact names.\n\nDeliver `<exact/folder/>` + `<exact/file.ts>`:\n1. `<component or handler>` bound to `GET /v1/<area>/<resource>` (`<operationId>`), first paint from `<fixture>`.\n2. Clickables: `<element>` opens `<dialog>`; `<card>` navigates to `/<route>?<params>` (rule 45-ui-clicks: one test each).\n3. Empty, loading, error and forbidden states with the exact copy from SCREENS.md.\n4. Events: on `<event.type.v1>` invalidate `<query key>`.\n5. `README.md` in the module folder; docs/user/<app>/<page>.md updated.",
+      "outOfScope": [
+        "<what a nearby ticket owns instead, by id>"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-1",
+          "kind": "happy",
+          "text": "Given <fixture file and route>, when <the user does X / the call is made>, then <exact visible result or response, with real values>; clicking <element> navigates to <exact path and params>."
+        },
+        {
+          "id": "AC-2",
+          "kind": "edge",
+          "text": "Given <empty data / boundary value>, then <exact empty-state copy or clamped behaviour>."
+        },
+        {
+          "id": "AC-3",
+          "kind": "negative",
+          "text": "Given <wrong role / wrong tenant / 503 upstream>, then <403 / 404 / fallback copy> and <what must NOT happen>."
+        },
+        {
+          "id": "AC-4",
+          "kind": "happy",
+          "text": "Test command: `<one command that must exit 0, e.g. pnpm --filter <app> test -- <module>>`"
+        }
+      ],
+      "nfrs": [
+        {
+          "id": "NFR-1",
+          "text": "<p95 latency / bundle size / a11y target>"
+        }
+      ],
+      "technicalDetails": {
+        "services": [
+          "<lock unit folder 1>",
+          "<lock unit file 2>"
+        ],
+        "apiContract": "GET /v1/<area>/<resource> (<operationId>)",
+        "dataMigration": "none | NNNN_<name>.sql",
+        "idempotency": "<key, or n/a (read-only)>",
+        "configKeys": [
+          "<KEY_NAME from CONFIG-KEYS.md>"
+        ],
+        "vendors": [
+          "<library>"
+        ],
+        "implementerNotes": "Decisions the agent must not re-open, traps seen before, which shared files are append-only."
+      },
+      "featureFlag": null,
+      "releaseNotes": {
+        "title": "<short>",
+        "description": "<= 280 chars",
+        "impacts": [
+          "<impact>"
+        ],
+        "audience": "internal",
+        "visibility": "silent"
+      },
+      "userInterface": {
+        "screens": [
+          "<PACK>/ui/screens/<id>-<slug>.png"
+        ],
+        "routes": [
+          "/<route>"
+        ],
+        "designLink": "<PACK>/ui/screens/<id>-<slug>.html",
+        "states": [
+          "loading",
+          "empty",
+          "error",
+          "forbidden"
+        ],
+        "accessibility": "axe: zero violations; keyboard reachable",
+        "browsers": [
+          "chromium"
+        ],
+        "visualBaseline": "<PACK>/ui/screens/<id>-<slug>.png within 5%"
+      },
+      "logging": {
+        "events": [
+          {
+            "name": "<event>",
+            "level": "info",
+            "when": "<when>",
+            "fields": [
+              "tenant_id",
+              "request_id"
+            ]
+          }
+        ],
+        "requiredFieldsEveryLine": [
+          "tenant_id",
+          "request_id"
+        ],
+        "neverLog": [
+          "tokens",
+          "PII"
+        ]
+      },
+      "environment": {
+        "name": "local data mode (msw) / compose",
+        "testData": "<fixtures/data/<file>.json>"
+      },
+      "dependenciesRisks": {
+        "dependsOn": [
+          "XX-00"
+        ],
+        "risks": "<risk>",
+        "rollback": "<how to back it out>"
+      },
+      "notes": "Two-zone layout: <PACK>/ is read-only; code at the repo root. Start the agent with: Implement XX-01.",
+      "links": [
+        {
+          "title": "CURSOR_PREAMBLE.md",
+          "url": "<PACK>/spec/CURSOR_PREAMBLE.md"
+        },
+        {
+          "title": "SCREENS.md",
+          "url": "<PACK>/spec/SCREENS.md"
+        },
+        {
+          "title": "openapi",
+          "url": "<PACK>/spec/openapi/<area>.yaml"
+        }
+      ]
+    }
+  ]
+}

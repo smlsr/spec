@@ -1,0 +1,40 @@
+---
+description: Program page for a HOS-Admin ticket (prefixes AD-, AM-, AR-, AU-, AX-): standing law, owned folders, how a ticket is done, and the program preamble HOSPACK/HOS-Admin/spec/CURSOR_PREAMBLE.md — scoped to HOS-Admin's folders
+globs: ["apps/admin/**", "internal/admin/**", "pkg/contracts/admin/**", "migrations/003*"]
+alwaysApply: false
+---
+# HOS-Admin program page — applies when your ticket belongs to HOS-Admin
+
+## Standing law
+
+You are working in `HumanifyOS`. The complete specification of what you build lives in the `HOSPACK/HOS-Admin/` tree at the root of this
+repository (the HOSPACK/HOS-Admin build pack, mounted as a submodule or copy; `HOSPACK/` = HOS + HOS-UI + HOS-Admin, three programs side by side): `HOSPACK/HOS-Admin/<MODULE>/spec/**` (freeze, architecture, schema + SQL,
+OpenAPI, events, config keys, auth/tenancy, processes, fixtures, screens), `HOSPACK/HOS-Admin/api/`, `HOSPACK/HOS-Admin/schema/`, `HOSPACK/HOS-Admin/JIRA_IMPORT.json`
+(every ticket), `HOSPACK/HOS-Admin/plan/BUILD_MAP.html` (what runs now). Nothing is designed in chat: if a contract, table, event, key, route or
+screen is not in `HOSPACK/HOS-Admin/` (or, for the platform, in `HOSPACK/HOS/`), it does not exist yet — say so instead of inventing it.
+
+**HOS-Admin is the HumanifyOS administration program (AdminServer `hos-adminserver` :8150, the Admin web app `apps/web/admin`: clients/programs/LOBs, users/teams/roles/SSO, models, CARES profiles, engines console, rubric library/builder/ZTP/assignments, audit, approvals; admin roles platform_admin · tenant_admin · program_admin · rubric_admin · qa_ops).** The platform contract it builds on lives in the sibling pack `HOSPACK/HOS/` at the same repository root (LOOM, SWATCH, RUBRIC, CORE: OpenAPI, SQL, events, auth/tenancy, config keys, the base preamble `HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md`, `HOSPACK/HOS/api/`, `HOSPACK/HOS/schema/`) — it is **read-only for HOS-Admin agents**: never edit `HOSPACK/HOS/**`, never add a route, table or event there, never take a HOS ticket. `HOSPACK/HOS-UI/**` (the end-user application program) is a sibling pack too — read-only here; HOS-UI consumes `/v1/admin/audit/events`, `/v1/admin/roles/effective` and the rubric-builder deep link, nothing flows the other way. HOS-Admin code lives only in apps/admin/*, internal/admin, pkg/contracts/admin (Go) and apps/web/admin, packages/ui/src/admin, packages/contracts/admin, services/mock-api admin fixtures (TS); everything else in the repository belongs to HOS or the other sibling program. HOS-Admin starts when HOS gate G-READY is green (`scripts/hos-ready.sh`: core-api, rubric-maint query API, the seed, the token minter, the bus; prerequisites in `HOSPACK/HOS-Admin/plan/hos_prerequisites.json`, contract `HOSPACK/HOS-Admin/INFRA-FROM-HOS.md`); HOS-Admin **builds on HOS (read-only)**, is **consumed by HOS-UI** (which starts at HOS-Admin gate G-RBAC: roles/RBAC + `POST /v1/admin/audit/events` live) and never depends on HOS-UI.
+
+## Folders HOSPACK/HOS-Admin owns in this repository
+
+- `apps/admin/hos-adminserver`
+- `internal/admin`
+- `pkg/contracts/admin (generated)`
+- `migrations/0030…0039`
+
+Everything else — the workbench, LOOM/SWATCH/RUBRIC/CORE processes, `pkg/lib`, `pkg/common`, `packages/{api,features,ui,platform}` roots, deploy, CI — is HOS's
+(and the other consumer program's folders are its own); a HOSPACK/HOS-Admin ticket never changes it (a needed platform change is a HOS ticket, filed through the pack, never done in passing).
+
+## How a HOSPACK/HOS-Admin ticket is done
+
+1. The ticket is `HOSPACK/HOS-Admin/JIRA_IMPORT.json` → `projects[0].issues[externalId == <ID>]` (ids `AD-*` (backend), `AU-*` (UI), `AM-*` (migrations), `AX-*` (cross-cut/e2e/ship), `AR-00` (readiness), `AR-70` (direction files)); touch only its lock units.
+2. Preambles, in order: `HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md` (base, read-only) → `HOSPACK/HOS-Admin/ADMIN/spec/CURSOR_PREAMBLE.md` → the program preamble `HOSPACK/HOS-Admin/spec/CURSOR_PREAMBLE.md`.
+3. Contracts: `HOSPACK/HOS-Admin/ADMIN/spec/openapi/openapi-admin.yaml` is HOSPACK/HOS-Admin's; LOOM/CORE/RUBRIC contracts are read from `HOSPACK/HOS/<MODULE>/spec/openapi/` and never edited.
+   Routes live in `apps/admin/hos-adminserver/server`, domain code in `internal/admin/<pkg>`; platform calls go only through `pkg/lib/invoke` (Dapr service invocation, Bearer forwarded).
+4. Before the PR: `make codegen test lint spec-lint arch-lint`, `make admin-openapi-check`, `make admin-e2e`, `scripts/admin-live-smoke.sh`. One named test per acceptance criterion; PR body = `RESULT.json`.
+5. Prerequisites from HOS (what must be merged and running before a HOSPACK/HOS-Admin ticket can be proven live) are in `HOSPACK/HOS-Admin/plan/hos_prerequisites.json`;
+   `scripts/hos-ready.sh` is green (HOS gate G-READY: core-api, rubric-maint, seed, tokens, bus) is the readiness contract — never work around a red readiness check.
+
+Skill `.claude/skills/hosadmin-admin/SKILL.md` explains how to add things the HOSPACK/HOS-Admin way and which commands to run.
+
+@HOSPACK/HOS-Admin/spec/CURSOR_PREAMBLE.md

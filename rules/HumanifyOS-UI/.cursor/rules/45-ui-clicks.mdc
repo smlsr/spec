@@ -1,0 +1,16 @@
+---
+description: "UI click rule: every clickable element (opens a popup, navigates, or runs a function) is a test-case requirement"
+globs: ["apps/web/**", "packages/ui/**", "packages/features/**"]
+alwaysApply: false
+---
+# 45 · Every click is a test case
+
+Agents leave click handlers unwired, and later edits to a page quietly break them. On every page and component, in every program (HOS workbench, HOS-UI quality, HOS-Admin admin):
+
+1. **Inventory.** A *clickable* is any element whose click opens something (popup, modal, drawer, menu, popover, tooltip), navigates (link, row, card, tab, breadcrumb, pager), submits, or runs a function (button, icon button, toggle, chip, sort header, row action). Every new or changed clickable is listed in the PR description under `Clickables` as `<route or component> · <accessible name> · <expected result> · <test name>`.
+2. **One test per clickable** — vitest + Testing Library + `@testing-library/user-event`, against the msw fixtures: render → `await user.click(screen.getByRole(<role>, { name }))` → assert what the user sees: the dialog or menu is open (`getByRole('dialog')`), the router location is the exact path and search params, the mutation went out with the expected body (msw handler spy), the label, state or count changed. A handler mock that was "called" is not enough.
+3. **Keyboard and disabled.** Focusable clickables are also activated with Enter or Space; a disabled clickable asserts that nothing happens.
+4. **Names.** `"<ID> AC<n> click <element-slug>"` when the click is part of an acceptance criterion, else `"click <route> <element-slug>"`, in the module's test file beside the component.
+5. **Tests outlive the ticket.** Never delete or `.skip` a click test to make a change pass; a removed or rewired handler must fail a test. A ticket that touches a page re-runs that page's tests (`pnpm --filter <app> test -- <module>`).
+6. **E2E does not replace it.** Playwright journeys cover flows across pages; the unit click tests stay.
+7. **Done means no clickable without a test.** Review (Bugbot / Reed) rejects a PR whose `Clickables` list is missing or names an element with no test.

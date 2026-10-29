@@ -1,0 +1,18 @@
+---
+description: ADMIN module preamble and rules for its folders
+globs: ["apps/admin/**", "internal/admin/**", "pkg/contracts/admin/**", "migrations/003*"]
+alwaysApply: false
+---
+# ADMIN module preamble (attached by path)
+
+These folders belong to the **ADMIN** module. Its preamble is attached below — it is the module's own rules on top of the
+program preamble (and, for every module but LOOM, on top of LOOM's base preamble, attached last). When a rule here contradicts a
+general one, the module rule is more specific, never contradictory: follow it.
+
+Where to look (never invent): `HOSPACK/HOS-Admin/ADMIN/spec/00-FREEZE.md` (decisions), `HOSPACK/HOS-Admin/ADMIN/spec/openapi/` (the contract — change it
+first, then `make codegen` / `pnpm codegen`), `HOSPACK/HOS-Admin/ADMIN/spec/sql/` + `SCHEMA.md` (tables), `HOSPACK/HOS-Admin/ADMIN/spec/EVENTS.md` (events),
+`HOSPACK/HOS-Admin/ADMIN/spec/CONFIG-KEYS.md` (keys), `HOSPACK/HOS-Admin/ADMIN/spec/AUTH-TENANCY.md` (routes → scopes), `HOSPACK/HOS-Admin/ADMIN/spec/FIXTURES.md` + `fixtures/`
+(test data), `HOSPACK/HOS-Admin/ADMIN/spec/SCREENS.md` + `HOSPACK/HOS-Admin/ADMIN/ui/` (mocks and shots).
+
+@HOSPACK/HOS-Admin/ADMIN/spec/CURSOR_PREAMBLE.md
+@HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md

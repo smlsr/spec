@@ -1,0 +1,9 @@
+---
+description: HOSPACK direction, always on: AGENTS.md (common law, program router, workflow, definition of done)
+alwaysApply: true
+---
+# HOSPACK — always on
+
+`AGENTS.md` (attached below) is the whole always-on direction for `HumanifyOS-UI`: common law, the program router, the workflow and the definition of done. Your program page `02-program-<hos|hosui|hosadmin>.mdc` attaches by folder or description, the module rules `2x-*.mdc` by folder, the topic rules `3x-*.mdc` and `40-ticket.mdc` on request — nothing is pasted.
+
+@AGENTS.md

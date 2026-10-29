@@ -1,0 +1,31 @@
+---
+description: Use when touching authentication, Bearer tokens, scopes, tenancy (tid/pid/sid), RLS, revocation or the GOD-token bridge — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Auth Tenancy
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Auth Tenancy
+
+Three-level tenancy, route → scope table, stub tokens, revocation store, seed-token paths.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Auth Tenancy
+
+Three-level tenancy, route → scope table, stub tokens, revocation store, seed-token paths.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Auth Tenancy
+
+Three-level tenancy, route → scope table, stub tokens, revocation store, seed-token paths.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/LOOM/spec/AUTH-TENANCY.md
+@HOSPACK/HOS-UI/APP/spec/AUTH-TENANCY.md
+@HOSPACK/HOS-Admin/ADMIN/spec/AUTH-TENANCY.md

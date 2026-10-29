@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Front-End Platform Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEFF3;
+    --surface:#FFFFFF;
+    --ink:#131C2B;
+    --ink-soft:#4C5768;
+    --rule:#C9CFDA;
+    --rule-soft:#DEE3EA;
+    --steel:#1D5BA6;
+    --amber:#8A6A12;
+    --amber-bg:#FBF4E2;
+    --steel-bg:#E7EDF7;
+    --sans:"IBM Plex Sans",system-ui,sans-serif;
+    --display:"Space Grotesk",var(--sans);
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font:400 16px/1.6 var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--steel);text-decoration-thickness:1px;text-underline-offset:2px}
+  :focus-visible{outline:2px solid var(--steel);outline-offset:3px}
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    border-bottom:1px solid var(--rule);
+    background:var(--surface);
+  }
+  .masthead-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,380px);
+    gap:56px;
+    align-items:center;
+    padding:64px 28px 56px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  h1{
+    font:700 clamp(34px,5.2vw,54px)/1.02 var(--display);
+    letter-spacing:-0.025em;
+    margin:0 0 18px;
+  }
+  .standfirst{
+    font-size:17px;
+    line-height:1.62;
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 22px;
+  }
+  .brief{
+    display:flex;
+    flex-wrap:wrap;
+    border-top:1px solid var(--rule-soft);
+    padding-top:16px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .brief div{padding-right:22px;margin-right:22px;border-right:1px solid var(--rule-soft)}
+  .brief div:last-child{border-right:0;margin-right:0;padding-right:0}
+  .brief b{display:block;color:var(--ink);font-weight:600;font-size:15px}
+
+  /* ---------- layer schematic ---------- */
+  .schematic{width:100%;height:auto}
+  .schematic text{font-family:var(--mono);font-size:11px;fill:var(--ink)}
+  .schematic .cap{fill:var(--ink-soft);font-size:9.5px}
+  .schematic rect{fill:var(--surface);stroke:var(--ink);stroke-width:1}
+  .schematic rect.tint{fill:var(--steel-bg);stroke:var(--steel)}
+  .schematic line{stroke:var(--rule);stroke-width:1}
+  .schematic path{fill:none;stroke:var(--steel);stroke-width:1.2}
+
+  /* ---------- layout ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns:186px minmax(0,1fr);
+    gap:52px;
+    padding:52px 28px 96px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  nav{position:sticky;top:32px;align-self:start;font-size:13.5px}
+  nav ol{list-style:none;margin:0;padding:0}
+  nav li{margin:0 0 2px}
+  nav a{
+    display:block;
+    padding:5px 0 5px 12px;
+    border-left:2px solid var(--rule-soft);
+    color:var(--ink-soft);
+    text-decoration:none;
+    line-height:1.35;
+  }
+  nav a:hover{color:var(--ink);border-left-color:var(--ink)}
+
+  section{margin:0 0 60px;scroll-margin-top:28px}
+  section > h2{
+    font:600 13.5px/1.3 var(--sans);
+    letter-spacing:.01em;
+    color:var(--steel);
+    margin:0 0 6px;
+  }
+  section > h2 + .lede{
+    font:600 26px/1.25 var(--display);
+    letter-spacing:-0.018em;
+    margin:0 0 20px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--rule);
+  }
+  h3{
+    font:600 16px/1.35 var(--sans);
+    margin:30px 0 8px;
+  }
+  p{margin:0 0 14px;max-width:74ch}
+  ul{margin:0 0 14px;padding-left:19px;max-width:74ch}
+  li{margin:0 0 7px}
+  code{font:400 13.5px/1.5 var(--mono);background:var(--surface);border:1px solid var(--rule-soft);border-radius:2px;padding:1px 4px}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:14.5px}
+  th{
+    text-align:left;
+    font-weight:600;
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:0 14px 8px 0;
+    border-bottom:1px solid var(--ink);
+  }
+  td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+  td:last-child,th:last-child{padding-right:0}
+  tbody tr td:first-child{font-weight:500;white-space:nowrap}
+  .t-wide td:first-child{white-space:normal}
+
+  /* ---------- code block ---------- */
+  pre{
+    font:400 13px/1.62 var(--mono);
+    background:var(--surface);
+    border:1px solid var(--rule);
+    padding:18px 20px;
+    margin:0 0 16px;
+    overflow-x:auto;
+  }
+  pre b{font-weight:500;color:var(--steel)}
+  pre i{font-style:normal;color:var(--ink-soft)}
+
+  /* ---------- callout ---------- */
+  .note{
+    border-left:3px solid var(--amber);
+    background:var(--amber-bg);
+    padding:14px 18px;
+    margin:0 0 18px;
+    font-size:14.5px;
+  }
+  .note p{margin:0;max-width:70ch}
+  .note p + p{margin-top:8px}
+
+  /* ---------- split ---------- */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .split h3{margin-top:0}
+  .split ul{padding-left:17px;font-size:14.5px}
+
+  /* ---------- context rows ---------- */
+  .ctx{border-top:1px solid var(--ink);margin:0 0 18px}
+  .ctx > div{
+    display:grid;
+    grid-template-columns:200px minmax(0,1fr);
+    gap:24px;
+    padding:15px 0;
+    border-bottom:1px solid var(--rule-soft);
+  }
+  .ctx h4{font:600 15px/1.35 var(--sans);margin:0}
+  .ctx h4 span{display:block;font:400 13px/1.4 var(--mono);color:var(--ink-soft);margin-top:3px}
+  .ctx p{margin:0;font-size:14.5px}
+
+  footer{
+    border-top:1px solid var(--rule);
+    background:var(--surface);
+    padding:28px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  footer div{max-width:1180px;margin:0 auto}
+
+  @media (max-width:900px){
+    .masthead-inner{grid-template-columns:1fr;gap:36px;padding:44px 22px 40px}
+    .shell{grid-template-columns:1fr;gap:0;padding:36px 22px 64px}
+    nav{position:static;margin:0 0 44px;padding-bottom:28px;border-bottom:1px solid var(--rule)}
+    nav ol{columns:2;column-gap:20px}
+    .split{grid-template-columns:1fr;gap:8px}
+    .ctx > div{grid-template-columns:1fr;gap:6px}
+    table{font-size:14px}
+    tbody tr td:first-child{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <h1>Front-end platform architecture</h1>
+      <p class="standfirst">A shared React and TypeScript foundation for several web applications and Chrome extensions.</p>
+      <div class="brief">
+        <div><b>3&ndash;5</b>developers</div>
+        <div><b>Greenfield</b>no legacy to carry</div>
+        <div><b>Two surfaces</b>web apps and extensions</div>
+      </div>
+    </div>
+
+    <svg class="schematic" viewBox="0 0 360 250" role="img" aria-label="Dependency layers: applications depend on features, which depend on UI and API; UI depends on platform, API on contracts.">
+      <rect class="tint" x="8" y="8" width="150" height="30"/>
+      <text x="20" y="27">web apps</text>
+      <rect class="tint" x="202" y="8" width="150" height="30"/>
+      <text x="214" y="27">extensions</text>
+
+      <rect x="8" y="62" width="344" height="30"/>
+      <text x="20" y="81">features</text>
+      <text class="cap" x="330" y="81" text-anchor="end">screens, components</text>
+
+      <rect x="8" y="116" width="166" height="30"/>
+      <text x="20" y="135">ui</text>
+      <rect x="186" y="116" width="166" height="30"/>
+      <text x="198" y="135">api</text>
+      <text class="cap" x="340" y="135" text-anchor="end">queries, keys</text>
+
+      <rect x="8" y="170" width="166" height="30"/>
+      <text x="20" y="189">platform</text>
+      <rect x="186" y="170" width="166" height="30"/>
+      <text x="198" y="189">contracts</text>
+
+      <line x1="8" y1="222" x2="352" y2="222"/>
+      <text class="cap" x="8" y="238">imports flow downward only</text>
+
+      <path d="M83 38 V62"/><path d="M79 56 l4 6 4-6"/>
+      <path d="M277 38 V62"/><path d="M273 56 l4 6 4-6"/>
+      <path d="M91 92 V116"/><path d="M87 110 l4 6 4-6"/>
+      <path d="M269 92 V116"/><path d="M265 110 l4 6 4-6"/>
+      <path d="M91 146 V170"/><path d="M87 164 l4 6 4-6"/>
+      <path d="M269 146 V170"/><path d="M265 164 l4 6 4-6"/>
+    </svg>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav aria-label="Contents">
+    <ol>
+      <li><a href="#decisions">The stack</a></li>
+      <li><a href="#structure">Repository structure</a></li>
+      <li><a href="#inside">Inside an application</a></li>
+      <li><a href="#boundaries">Dependency rules</a></li>
+      <li><a href="#extensions">Extension constraints</a></li>
+      <li><a href="#state">State model</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="decisions">
+      <h2>The stack</h2>
+      <table>
+        <thead><tr><th>Concern</th><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Repository</td><td>pnpm workspaces + Turborepo</td><td>Cached task execution with minimal configuration. Strict resolution rules out phantom dependencies across shared packages.</td></tr>
+          <tr><td>Web apps</td><td>Vite + React 19 + TanStack Router, SPA</td><td>Authenticated internal apps have no server-rendering need, so no per-app server runtime. Routes and search params are typed end to end.</td></tr>
+          <tr><td>Compiler</td><td>React Compiler, on by default</td><td>Automatic memoization at build time; manual <code>useMemo</code>/<code>useCallback</code> only where profiling shows a need. Applies to web apps and extensions.</td></tr>
+          <tr><td>Extensions</td><td>WXT + React</td><td>Manifest generation, file-based entrypoints, hot reload in every context, and shadow-root mounting for content scripts.</td></tr>
+          <tr><td>Server state</td><td>TanStack Query</td><td>Caching, revalidation and deduplication. Queries, keys and invalidation are organised by API resource, not by feature.</td></tr>
+          <tr><td>URL state</td><td>TanStack Router search params</td><td>Filters, tabs, pagination and selection live in the URL: typed, validated, shareable.</td></tr>
+          <tr><td>Client state</td><td>Zustand, feature-scoped</td><td>Small and unopinionated. Stores come from factories, never module singletons.</td></tr>
+          <tr><td>Forms</td><td>TanStack Form + Zod</td><td>Same family as router and query.</td></tr>
+          <tr><td>Contracts</td><td>Hand-written Zod schemas</td><td>Parsed at the HTTP boundary. Replaced by generated schemas once an API specification exists, without touching consumers.</td></tr>
+          <tr><td>UI</td><td>Vendored shadcn on Base UI, tokens, Tailwind v4 preset</td><td>Base UI is shadcn&rsquo;s default primitive layer. Components are owned once vendored; updates are reviewed. Apps consume the package, never their own copies.</td></tr>
+          <tr><td>Testing</td><td>Vitest, Testing Library, MSW, Playwright</td><td>Mocks validate against the same contract schemas as the client. MSW serves unit tests; <code>services/mock-api</code> serves local development and end-to-end runs.</td></tr>
+          <tr><td>Telemetry</td><td>OpenTelemetry behind an internal wrapper</td><td>One interface for traces, errors and events. Vendor SDKs never imported outside it.</td></tr>
+          <tr><td>Versions</td><td>pnpm catalogs</td><td>Each third-party version declared once.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2>Repository structure</h2>
+<pre>apps/
+  web/
+    console/          Vite + TanStack Router SPA
+    admin/
+  extensions/
+    tray/             WXT
+    clipper/
+packages/
+  api/                queries, mutations, keys shared by more than one app, by resource
+  features/           screens and components shared by more than one app
+  ui/                 tokens, primitives, patterns, forms
+  contracts/          Zod schemas, the API boundary
+  platform/           http, auth, extension, telemetry, flags, result, utils
+  testing/            MSW handlers, fixtures
+services/
+  mock-api/           local API for development and tests
+tooling/              tsconfig, eslint, tailwind preset, vite preset</pre>
+      <p>Apps are grouped by surface because build tooling, release cadence and CI differ; each extension is its own distribution unit. Subfolders become separate packages only when a boundary needs enforcing.</p>
+    </section>
+
+    <section id="inside">
+      <h2>Inside an application</h2>
+<pre>apps/web/console/src/
+  routes/             file-based route tree, thin
+  api/
+    tasks.ts          queries, mutations, keys
+    lists.ts
+    comments.ts
+  modules/            features: screens, components, UI state
+    tasks/
+      components/
+      model/          types, mapping, logic
+  app/                providers, router, error boundaries
+  lib/                app-local instances (session, API client) and helpers</pre>
+      <p>Modules are owned by the app and may import one another freely; routes stay thin and compose them. <code>api/</code> mirrors <code>contracts/</code>, one file per resource. Anything a second app needs moves to <code>packages/api</code> or <code>packages/features</code>, with app-specific parts injected by the host.</p>
+    </section>
+
+    <section id="boundaries">
+      <h2>Dependency rules</h2>
+<pre>app        &rarr;  features, api, ui, contracts, platform
+features   &rarr;  api, ui, contracts, platform
+api        &rarr;  contracts, platform
+ui         &rarr;  platform                 (tokens and utilities only)
+contracts  &rarr;  platform                 (result and utils only)
+platform   &rarr;  nothing internal</pre>
+      <p>Rules are checked twice: on package manifests, and by lint rules on imports. A <code>ui</code> component may not know about contracts, transport or auth. Packages expose subpath exports rather than one barrel, keeping builds incremental and tree-shaking honest.</p>
+    </section>
+
+    <section id="extensions">
+      <h2>Extension constraints</h2>
+      <p>Extensions run as separate programs with no shared window, no ambient cookies and a delayed release cycle. Shared code is designed around that:</p>
+      <ul>
+        <li><b>Transport-agnostic HTTP client.</b> <code>fetch</code> and the token provider are injected, so one client runs in web apps and extension workers.</li>
+        <li><b>Auth as core plus adapters.</b> Refresh and expiry logic is shared; token storage is per surface.</li>
+        <li><b>Shadow-root-safe UI.</b> Content scripts render inside a shadow root, so primitives must attach portals (dialogs, menus, tooltips) there, not to <code>document.body</code>.</li>
+        <li><b>Service worker as trust boundary.</b> Network calls and privileged actions run in the worker; other contexts request them by message.</li>
+        <li><b>API tolerates older extension clients.</b> Store review delays extension releases, so API changes must stay backward compatible.</li>
+      </ul>
+    </section>
+
+    <section id="state">
+      <h2>State model</h2>
+      <table class="t-wide">
+        <thead><tr><th>Kind</th><th>Owner</th><th>Shape</th></tr></thead>
+        <tbody>
+          <tr><td>Server state</td><td>TanStack Query</td><td>Most of what gets called state. Apps reading the same resource cache it independently; we standardise keys and the fetch layer, not a runtime. Caches are per user and cleared on logout.</td></tr>
+          <tr><td>Session</td><td>Auth layer</td><td>Handled at the auth boundary; cross-surface behaviour depends on the open auth decision.</td></tr>
+          <tr><td>Client UI state</td><td>Zustand</td><td>Per app, per feature. Sharing it across deployed apps would couple their releases.</td></tr>
+        </tbody>
+      </table>
+      <p>Anything the URL can own lives in search params. Nothing Query owns belongs in Zustand, and nothing the URL should own belongs in either.</p>
+    </section>
+      <div class="note"><p><b>Open:</b> the authentication approach and identity provider are not yet decided. The core/adapter split keeps that choice contained to the auth layer.</p><p><b>Open:</b> internationalisation approach and tooling are not yet decided. Shared <code>ui</code> components already take all user-facing text as props, so any approach can be adopted without changing them.</p></div>
+
+  </main>
+</div>
+
+<footer><div>Architecture proposal. Revisit when cached CI runs pass fifteen minutes, the package count passes twenty-five, or a second team joins the repository.</div></footer>
+
+</body>
+</html>

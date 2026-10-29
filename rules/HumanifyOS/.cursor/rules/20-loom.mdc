@@ -1,0 +1,18 @@
+---
+description: LOOM module preamble and rules for its folders
+globs: ["apps/loom/**", "apps/swatch/**", "internal/loom/**", "pkg/lib/**", "pkg/common/**", "pkg/contracts/loom/**", "pkg/contracts/swatch/**", "migrations/000*", "deploy/**", "scripts/**", "test/**"]
+alwaysApply: false
+---
+# LOOM module preamble (attached by path)
+
+These folders belong to the **LOOM** module. Its preamble is attached below — it is the module's own rules on top of the
+program preamble (and, for every module but LOOM, on top of LOOM's base preamble, attached last). When a rule here contradicts a
+general one, the module rule is more specific, never contradictory: follow it.
+
+Where to look (never invent): `HOSPACK/HOS/LOOM/spec/00-FREEZE.md` (decisions), `HOSPACK/HOS/LOOM/spec/openapi/` (the contract — change it
+first, then `make codegen` / `pnpm codegen`), `HOSPACK/HOS/LOOM/spec/sql/` + `SCHEMA.md` (tables), `HOSPACK/HOS/LOOM/spec/EVENTS.md` (events),
+`HOSPACK/HOS/LOOM/spec/CONFIG-KEYS.md` (keys), `HOSPACK/HOS/LOOM/spec/AUTH-TENANCY.md` (routes → scopes), `HOSPACK/HOS/LOOM/spec/FIXTURES.md` + `fixtures/`
+(test data), `HOSPACK/HOS/LOOM/spec/SCREENS.md` + `HOSPACK/HOS/LOOM/ui/` (mocks and shots).
+
+@HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md
+@HOSPACK/HOS/LOOM/spec/MONOREPO.md

@@ -1,0 +1,33 @@
+---
+description: Use when building or changing a screen, page, route, component or visual state in a web app — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Screens
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Screens
+
+Build to the mock named on the ticket's first line (`**UI screen:** HOSPACK/HOS/<MODULE>/ui/…`); the shots under `HOSPACK/HOS/<MODULE>/ui/shots/` are the visual baseline; channels come from the registry, stubs render `Unavailable`.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Screens
+
+Build to the mock named on the ticket's first line (`**UI screen:** HOSPACK/HOS-UI/<MODULE>/ui/…`); the shots under `HOSPACK/HOS-UI/<MODULE>/ui/shots/` are the visual baseline; channels come from the registry, stubs render `Unavailable`.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Screens
+
+Build to the mock named on the ticket's first line (`**UI screen:** HOSPACK/HOS-Admin/<MODULE>/ui/…`); the shots under `HOSPACK/HOS-Admin/<MODULE>/ui/shots/` are the visual baseline; channels come from the registry, stubs render `Unavailable`.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/LOOM/spec/SCREENS.md
+@HOSPACK/HOS/RUBRIC/spec/SCREENS.md
+@HOSPACK/HOS/CORE/spec/SCREENS.md
+@HOSPACK/HOS-UI/APP/spec/SCREENS.md
+@HOSPACK/HOS-Admin/ADMIN/spec/SCREENS.md

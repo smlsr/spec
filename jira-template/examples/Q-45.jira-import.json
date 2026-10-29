@@ -1,0 +1,37 @@
+{
+  "projects": [
+    {
+      "name": "Humanify OS",
+      "key": "HOS",
+      "type": "software",
+      "components": [
+        {
+          "name": "APP"
+        }
+      ],
+      "issues": [
+        {
+          "externalId": "Q-45",
+          "summary": "Q-45 · Emerging issues #sec-emerging: rising topics, 8-week sparkline, sentiment, quote",
+          "issueType": "Story",
+          "priority": "High",
+          "status": "To Do",
+          "labels": [
+            "app-module",
+            "humanifyos",
+            "layer:ui",
+            "module:app",
+            "program-wave:7",
+            "ui-pages",
+            "wave:7"
+          ],
+          "components": [
+            "APP"
+          ],
+          "description": "*Module:* APP · *Layer:* ui · *Repo:* HumanifyOS-UI\n\n*UI screen:* [/HOSPACK/HOS-UI/APP/ui/quality-hub.html|/HOSPACK/HOS-UI/APP/ui/quality-hub.html] (routes /voc#sec-emerging, → /drill/vol/topic/<name>)\n\nh3. Why\nEmerging issues (video 04:13–04:24) are the topics rising fastest week over week weighted by worsening sentiment: a {{3 rising}} pill, one card per topic with its delta, 8-week area chart, sentiment bar, contacts/CSAT/negative share and a representative negative quote. The section re-scopes by program and period, updates when the emerging job publishes {{hos.voc.emerging.v1}}, and must render an honest empty state per scope.\n\nh3. What\n*UI screen:* {{/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png}} · {{/HOSPACK/HOS-UI/APP/ui/quality-hub.html}} (open the .html mock in a browser; shots are the rendered baseline)\n\nDeliver {{apps/web/quality/src/modules/voc/emerging/}} + {{src/api/app-voc-emerging.ts}}: {{useEmerging(period, program)}} key {{['app','voc','emerging',period,program]}} → {{vocEmerging}} ({{EmergingTopic(id, name, delta, trend, sent, vol, csat, neg, quote)[]}}; first paint from {{VocOverview.emerging}}); {{EmergingSection}} ({{#sec-emerging}}: title {{Emerging issues & trends}}, pill {{<n> rising}}, copy {{Topics rising fastest week-over-week, weighted by worsening sentiment · <scope_note>.}}, {{EmergingCard}}: name · {{+<delta>%}} chip · Q-16 {{TrendArea trend}} (8 weeks, compact) · {{SentimentStack sent}} · {{<vol> contacts · CSAT <csat> · <neg>% negative}} · the representative negative {{quote}} as text; card click → {{/drill/vol/topic/<name>}} (Q-38); empty {{No emerging issues in <program_name> for <period label>.}}); frame {{hos.voc.emerging.v1}} → invalidate (Q-62); period + program from Q-40; mobile: cards stack one per row; {{README.md}}; vitest + axe.\n\nh3. Acceptance criteria\n* *AC-1* (happy): Given {{/voc?period=week&program=all}} ({{fixtures/data/cx_emerging.json}}), then the pill reads {{3 rising}} and the first card {{Claim status / delay · +38%}} with an 8-week sparkline, the sentiment bar, {{3,120 contacts · CSAT 3.2 · 56% negative}} and a negative quote; clicking it navigates to {{/drill/vol/topic/Claim%20status%20%2F%20delay?period=week&program=all}}.\n* *AC-2* (edge): Given {{?program=property&period=30d}} with no rising topic, then the copy {{No emerging issues in Property for Last 30 days.}}; given a frame {{hos.voc.emerging.v1}}, the list refetches and a new card appears without reload; given {{trend=[]}} on a card, the sparkline shows {{No data}} and the card still renders.\n* *AC-3* (negative): Given Ramona's session, then the section never mounts; given {{vocEmerging}} answering {{503 (code:\"upstream_unavailable\")}}, the section shows the overview's {{emerging}} list with a {{Live update unavailable}} note and no retry storm (one retry).\n* *AC-4* (happy): Given the axe sweep on the section with three cards, then zero violations: each sparkline has {{role=img}} with {{aria-label}} {{<name>, 8 weeks, +38%}} and the quote is a {{<blockquote>}}.\n* *AC-5* (happy): Given the screen rendered at 1440×900 against the msw data, then the emerging section matches (pill, copy, three cards with delta chips, sparklines, sentiment bars, stats and quotes) and the render matches {{/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png}} within the ≤ 5 % perceptual-diff tolerance X-10 uses (fonts / anti-aliasing, Q-8); every string of the DOM dump {{/HOSPACK/HOS-UI/APP/ui/shots/text/cx-emerging.txt}} that belongs to this ticket's elements is present in the DOM.\n* *AC-6* (happy): Test command: {{pnpm --filter quality test -- voc/emerging}} exits 0 — vitest + testing-library against the Q-60 msw handlers generated from {{fixtures/data}} (the UI's local data mode): no BFF process, no browser, no Playwright.\n\nh3. Technical details\n* *Lock units:* {{apps/web/quality/src/modules/voc/emerging}}, {{apps/web/quality/src/api/app-voc-emerging.ts}}\n* *API contract:* GET /v1/app/cx/emerging (vocEmerging), GET /v1/app/cx/overview (vocOverview)\n* *Migration:* none\n* *Idempotency:* n/a (read-only or naturally idempotent)\n* *Config keys:* —\n* *Vendors:* TanStack Query, d3-scale\n* *Implementer notes:* The emerging rule (WoW delta weighted by sentiment shift) runs server-side ({{cx_emerging.json}} rule + lists per period × program; the ops route {{POST /v1/_ops/emerging/run}} triggers it in live mode); the UI never ranks. Quotes are anonymized server text rendered as text. The sparkline is Q-16's {{TrendArea}} in compact mode (no axis labels).\n\n*Blocked by:* Q-00, Q-02, Q-04, Q-61, Q-16, A-53\n\nh3. Links\n* [CURSOR_PREAMBLE.md|/HOSPACK/HOS-UI/APP/spec/CURSOR_PREAMBLE.md]\n* [SCREENS.md|/HOSPACK/HOS-UI/APP/spec/SCREENS.md]\n* [PERSONA-VOC.md|/HOSPACK/HOS-UI/APP/spec/PERSONA-VOC.md]\n* [GLOSSARY.md|/HOSPACK/HOS-UI/APP/spec/GLOSSARY.md]\n* [openapi-app.yaml|/HOSPACK/HOS-UI/APP/spec/openapi/openapi-app.yaml]\n* [API-INDEX.md|/HOSPACK/HOS-UI/APP/spec/API-INDEX.md]\n* [README.md|/HOSPACK/HOS-UI/APP/spec/fixtures/data/README.md]\n* [EVENTS.md|/HOSPACK/HOS-UI/APP/spec/EVENTS.md]\n* [quality-hub.html|/HOSPACK/HOS-UI/APP/ui/quality-hub.html]\n* [INDEX.md|/HOSPACK/HOS-UI/APP/ui/shots/INDEX.md]\n* [HOS-UI module index — APP|/HOSPACK/HOS-UI/APP/README.md]\n* [UI screen — cx-emerging.png|/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png]"
+        }
+      ]
+    }
+  ],
+  "links": []
+}

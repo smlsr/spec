@@ -1,0 +1,18 @@
+---
+description: CORE module preamble and rules for its folders
+globs: ["apps/core/**", "internal/core/**", "pkg/contracts/core/**", "migrations/001[2-6]*"]
+alwaysApply: false
+---
+# CORE module preamble (attached by path)
+
+These folders belong to the **CORE** module. Its preamble is attached below — it is the module's own rules on top of the
+program preamble (and, for every module but LOOM, on top of LOOM's base preamble, attached last). When a rule here contradicts a
+general one, the module rule is more specific, never contradictory: follow it.
+
+Where to look (never invent): `HOSPACK/HOS/CORE/spec/00-FREEZE.md` (decisions), `HOSPACK/HOS/CORE/spec/openapi/` (the contract — change it
+first, then `make codegen` / `pnpm codegen`), `HOSPACK/HOS/CORE/spec/sql/` + `SCHEMA.md` (tables), `HOSPACK/HOS/CORE/spec/EVENTS.md` (events),
+`HOSPACK/HOS/CORE/spec/CONFIG-KEYS.md` (keys), `HOSPACK/HOS/CORE/spec/AUTH-TENANCY.md` (routes → scopes), `HOSPACK/HOS/CORE/spec/FIXTURES.md` + `fixtures/`
+(test data), `HOSPACK/HOS/CORE/spec/SCREENS.md` + `HOSPACK/HOS/CORE/ui/` (mocks and shots).
+
+@HOSPACK/HOS/CORE/spec/CURSOR_PREAMBLE.md
+@HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md

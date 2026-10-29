@@ -1,0 +1,18 @@
+---
+description: APP module preamble and rules for its folders
+globs: ["apps/app/**", "internal/app/**", "pkg/contracts/app/**", "migrations/001[7-9]*", "migrations/002[016]*"]
+alwaysApply: false
+---
+# APP module preamble (attached by path)
+
+These folders belong to the **APP** module. Its preamble is attached below — it is the module's own rules on top of the
+program preamble (and, for every module but LOOM, on top of LOOM's base preamble, attached last). When a rule here contradicts a
+general one, the module rule is more specific, never contradictory: follow it.
+
+Where to look (never invent): `HOSPACK/HOS-UI/APP/spec/00-FREEZE.md` (decisions), `HOSPACK/HOS-UI/APP/spec/openapi/` (the contract — change it
+first, then `make codegen` / `pnpm codegen`), `HOSPACK/HOS-UI/APP/spec/sql/` + `SCHEMA.md` (tables), `HOSPACK/HOS-UI/APP/spec/EVENTS.md` (events),
+`HOSPACK/HOS-UI/APP/spec/CONFIG-KEYS.md` (keys), `HOSPACK/HOS-UI/APP/spec/AUTH-TENANCY.md` (routes → scopes), `HOSPACK/HOS-UI/APP/spec/FIXTURES.md` + `fixtures/`
+(test data), `HOSPACK/HOS-UI/APP/spec/SCREENS.md` + `HOSPACK/HOS-UI/APP/ui/` (mocks and shots).
+
+@HOSPACK/HOS-UI/APP/spec/CURSOR_PREAMBLE.md
+@HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md

@@ -1,0 +1,31 @@
+---
+description: Use when adding, publishing or consuming a bus event (Dapr pub/sub, CloudEvents, subscriptions, EVENTS.md rows) — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Events
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Events
+
+Events are explicit: constant in `pkg/common/events.go`, one subscription row per consumer app-id in `pkg/lib/events/subscriptions.go`, handler at `/events/<type>`, six-column row in the module's `HOSPACK/HOS/<MODULE>/spec/EVENTS.md`. The program catalog below is generated from those rows — it is the truth for who publishes and who consumes.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Events
+
+Events are explicit: constant in `pkg/common/events.go`, one subscription row per consumer app-id in `pkg/lib/events/subscriptions.go`, handler at `/events/<type>`, six-column row in the module's `HOSPACK/HOS-UI/<MODULE>/spec/EVENTS.md`. The program catalog below is generated from those rows — it is the truth for who publishes and who consumes. The platform topics (HOS) are in the second catalog; HOSPACK/HOS-UI only consumes them.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Events
+
+Events are explicit: constant in `pkg/common/events.go`, one subscription row per consumer app-id in `pkg/lib/events/subscriptions.go`, handler at `/events/<type>`, six-column row in the module's `HOSPACK/HOS-Admin/<MODULE>/spec/EVENTS.md`. The program catalog below is generated from those rows — it is the truth for who publishes and who consumes. The platform topics (HOS) are in the second catalog; HOSPACK/HOS-Admin only consumes them.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/LOOM/spec/BUS_EVENTS.md
+@HOSPACK/HOS-UI/APP/spec/BUS_EVENTS.md
+@HOSPACK/HOS-Admin/ADMIN/spec/BUS_EVENTS.md

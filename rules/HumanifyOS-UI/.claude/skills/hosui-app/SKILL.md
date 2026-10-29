@@ -1,0 +1,14 @@
+---
+name: hosui-app
+description: How to add things the HOSPACK/HOS-UI way in HumanifyOS-UI — HOSAppServer, hos-ws, hos-seed (Go) and the TTEC Quality UI (TS); read before any A-*, Q-*, X-*, M-20…M-24, M-26 ticket
+---
+
+# HOSPACK/HOS-UI — adding things the HOSPACK/HOS-UI way (TTEC Quality UI)
+
+**HOS-UI is the HumanifyOS end-user application program (HOSAppServer `hos-appserver` :8140, `hos-ws` :8141, `hos-seed`, the TTEC Quality UI for the Agent, Supervisor, Ops Leader and VoC personas).** The platform contract it builds on lives in the sibling pack `HOSPACK/HOS/` at the same repository root (LOOM, SWATCH, RUBRIC, CORE: OpenAPI, SQL, events, auth/tenancy, config keys, the base preamble `HOSPACK/HOS/LOOM/spec/CURSOR_PREAMBLE.md`, `HOSPACK/HOS/api/`, `HOSPACK/HOS/schema/`) — it is **read-only for HOS-UI agents**: never edit `HOSPACK/HOS/**`, never add a route, table or event there, never take a HOS ticket. `HOSPACK/HOS-Admin/**` (the administration program: AdminServer :8150, the Admin UI, migrations 0030–0039) is a sibling pack too — read-only here; the Admin persona and the `/admin/*` routes left HOS-UI in v3.0. HOS-UI code lives only in apps/app/*, internal/app, pkg/contracts/app (Go) and apps/web/quality, packages/ui/src/quality, packages/contracts/app, services/mock-api app fixtures (TS); everything else in the repository belongs to HOS or the other sibling program. HOS-UI starts when HOS gate G-READY is green (`scripts/hos-ready.sh`; prerequisites in `HOSPACK/HOS-UI/plan/hos_prerequisites.json`) **and** HOS-Admin gate G-RBAC is green (its roles/RBAC + `POST /v1/admin/audit/events` are live — `HOSPACK/HOS-UI/INFRA-FROM-HOS-ADMIN.md`, `plan/hos_admin_prerequisites.json`); HOS-UI consumes HOS-Admin (audit writer client, effective roles, the rubric-builder deep link) and is never a dependency of HOS or HOS-Admin.
+
+- Contract first: `HOSPACK/HOS-UI/APP/spec/openapi/openapi-app.yaml` → `pnpm codegen` → implement. Platform contracts (`HOSPACK/HOS/<MODULE>/spec/openapi/`) are read-only.
+- Pages live in `apps/web/quality/src/{routes,modules,api,app,lib}`; shared primitives in `packages/ui/src/quality`; msw handlers + fixtures in `packages/testing/src/app` mirror `HOSPACK/HOS-UI/APP/spec/fixtures/app/**`.
+- Tables: only `app_*` (migrations 0017–0021 + 0026, `HOSPACK/HOS-UI/APP/spec/sql/`); never a table that describes an evaluation, a rubric definition, a fact or an RBAC/audit record (those have owners in HOS and HOS-Admin — the Access audit is written to HOS-Admin's `POST /v1/admin/audit/events`, Q-304).
+- Tests: one named test per acceptance criterion; vitest + msw, Playwright only in `pnpm app-e2e`.
+- Readiness: a HOSPACK/HOS-UI ticket that needs the platform running starts only when `scripts/hos-ready.sh` is green (HOS gate G-READY) and HOS-Admin's G-RBAC probes answer (`GET :8150/v1/_auth/probe`, `POST /v1/admin/audit/events`).

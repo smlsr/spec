@@ -1,0 +1,213 @@
+{
+  "projectKey": "HOS",
+  "defaultIssueType": "Story",
+  "defaultLabels": [
+    "humanifyos"
+  ],
+  "source": {
+    "prdTitle": "HumanifyOS end-user application (HOSAppServer + TTEC Quality UI) — every module on one dependency graph (APP)",
+    "prdVersion": "hos-1.4.0",
+    "generatedAt": "2026-10-29"
+  },
+  "tickets": [
+    {
+      "tempId": "Q-45",
+      "summary": "Emerging issues #sec-emerging: rising topics, 8-week sparkline, sentiment, quote",
+      "issueType": "Story",
+      "priority": "High",
+      "labels": [
+        "app-module",
+        "humanifyos",
+        "ui-pages",
+        "wave:7",
+        "module:app",
+        "program-wave:7"
+      ],
+      "layer": "ui",
+      "systems": [
+        {
+          "system": "HumanifyOS-UI",
+          "component": "apps/web/quality/src/modules/voc/emerging"
+        },
+        {
+          "system": "HumanifyOS-UI",
+          "component": "apps/web/quality/src/api/app-voc-emerging.ts"
+        }
+      ],
+      "areasProposed": [
+        "ui-pages"
+      ],
+      "forgeRepo": "HumanifyOS-UI",
+      "forgeMode": "feature",
+      "parentTempId": null,
+      "blockedByTempIds": [
+        "Q-00",
+        "Q-02",
+        "Q-04",
+        "Q-61",
+        "Q-16",
+        "A-53"
+      ],
+      "why": "Emerging issues (video 04:13–04:24) are the topics rising fastest week over week weighted by worsening sentiment: a `3 rising` pill, one card per topic with its delta, 8-week area chart, sentiment bar, contacts/CSAT/negative share and a representative negative quote. The section re-scopes by program and period, updates when the emerging job publishes `hos.voc.emerging.v1`, and must render an honest empty state per scope.",
+      "what": "**UI screen:** `/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png` · `/HOSPACK/HOS-UI/APP/ui/quality-hub.html` (open the .html mock in a browser; shots are the rendered baseline)\n\nDeliver `apps/web/quality/src/modules/voc/emerging/` + `src/api/app-voc-emerging.ts`: `useEmerging(period, program)` key `['app','voc','emerging',period,program]` → `vocEmerging` (`EmergingTopic{id, name, delta, trend, sent, vol, csat, neg, quote}[]`; first paint from `VocOverview.emerging`); `EmergingSection` (`#sec-emerging`: title `Emerging issues & trends`, pill `<n> rising`, copy `Topics rising fastest week-over-week, weighted by worsening sentiment · <scope_note>.`, `EmergingCard`: name · `+<delta>%` chip · Q-16 `TrendArea trend` (8 weeks, compact) · `SentimentStack sent` · `<vol> contacts · CSAT <csat> · <neg>% negative` · the representative negative `quote` as text; card click → `/drill/vol/topic/<name>` (Q-38); empty `No emerging issues in <program_name> for <period label>.`); frame `hos.voc.emerging.v1` → invalidate (Q-62); period + program from Q-40; mobile: cards stack one per row; `README.md`; vitest + axe.",
+      "outOfScope": [],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-1",
+          "kind": "happy",
+          "text": "Given `/voc?period=week&program=all` (`fixtures/data/cx_emerging.json`), then the pill reads `3 rising` and the first card `Claim status / delay · +38%` with an 8-week sparkline, the sentiment bar, `3,120 contacts · CSAT 3.2 · 56% negative` and a negative quote; clicking it navigates to `/drill/vol/topic/Claim%20status%20%2F%20delay?period=week&program=all`."
+        },
+        {
+          "id": "AC-2",
+          "kind": "edge",
+          "text": "Given `?program=property&period=30d` with no rising topic, then the copy `No emerging issues in Property for Last 30 days.`; given a frame `hos.voc.emerging.v1`, the list refetches and a new card appears without reload; given `trend=[]` on a card, the sparkline shows `No data` and the card still renders."
+        },
+        {
+          "id": "AC-3",
+          "kind": "negative",
+          "text": "Given Ramona's session, then the section never mounts; given `vocEmerging` answering `503 {code:\"upstream_unavailable\"}`, the section shows the overview's `emerging` list with a `Live update unavailable` note and no retry storm (one retry)."
+        },
+        {
+          "id": "AC-4",
+          "kind": "happy",
+          "text": "Given the axe sweep on the section with three cards, then zero violations: each sparkline has `role=img` with `aria-label` `<name>, 8 weeks, +38%` and the quote is a `<blockquote>`."
+        },
+        {
+          "id": "AC-5",
+          "kind": "happy",
+          "text": "Given the screen rendered at 1440×900 against the msw data, then the emerging section matches (pill, copy, three cards with delta chips, sparklines, sentiment bars, stats and quotes) and the render matches `/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png` within the ≤ 5 % perceptual-diff tolerance X-10 uses (fonts / anti-aliasing, Q-8); every string of the DOM dump `/HOSPACK/HOS-UI/APP/ui/shots/text/cx-emerging.txt` that belongs to this ticket's elements is present in the DOM."
+        },
+        {
+          "id": "AC-6",
+          "kind": "happy",
+          "text": "Test command: `pnpm --filter quality test -- voc/emerging` exits 0 — vitest + testing-library against the Q-60 msw handlers generated from `fixtures/data` (the UI's local data mode): no BFF process, no browser, no Playwright."
+        }
+      ],
+      "nfrs": [],
+      "technicalDetails": {
+        "services": [
+          "apps/web/quality/src/modules/voc/emerging",
+          "apps/web/quality/src/api/app-voc-emerging.ts"
+        ],
+        "apiContract": "GET /v1/app/cx/emerging (vocEmerging), GET /v1/app/cx/overview (vocOverview)",
+        "dataMigration": "none",
+        "idempotency": "n/a (read-only or naturally idempotent)",
+        "configKeys": [],
+        "vendors": [
+          "TanStack Query",
+          "d3-scale"
+        ],
+        "implementerNotes": "The emerging rule (WoW delta weighted by sentiment shift) runs server-side (`cx_emerging.json` rule + lists per period × program; the ops route `POST /v1/_ops/emerging/run` triggers it in live mode); the UI never ranks. Quotes are anonymized server text rendered as text. The sparkline is Q-16's `TrendArea` in compact mode (no axis labels)."
+      },
+      "featureFlag": null,
+      "releaseNotes": {
+        "title": "Emerging issues",
+        "description": "Rising-topic cards with sparkline, sentiment, stats and a representative quote, scoped by program and period.",
+        "impacts": [
+          "Catch issues as they rise"
+        ],
+        "audience": "internal",
+        "visibility": "silent"
+      },
+      "environment": {
+        "name": "ci",
+        "testData": "fixtures/data/cx_emerging.json (8-week series of the 3 rising topics, rule, lists per period × program); fixtures/data/cx_overview.json emerging"
+      },
+      "links": [
+        {
+          "title": "CURSOR_PREAMBLE.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/CURSOR_PREAMBLE.md"
+        },
+        {
+          "title": "SCREENS.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/SCREENS.md"
+        },
+        {
+          "title": "PERSONA-VOC.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/PERSONA-VOC.md"
+        },
+        {
+          "title": "GLOSSARY.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/GLOSSARY.md"
+        },
+        {
+          "title": "openapi-app.yaml",
+          "url": "/HOSPACK/HOS-UI/APP/spec/openapi/openapi-app.yaml"
+        },
+        {
+          "title": "API-INDEX.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/API-INDEX.md"
+        },
+        {
+          "title": "README.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/fixtures/data/README.md"
+        },
+        {
+          "title": "EVENTS.md",
+          "url": "/HOSPACK/HOS-UI/APP/spec/EVENTS.md"
+        },
+        {
+          "title": "quality-hub.html",
+          "url": "/HOSPACK/HOS-UI/APP/ui/quality-hub.html"
+        },
+        {
+          "title": "INDEX.md",
+          "url": "/HOSPACK/HOS-UI/APP/ui/shots/INDEX.md"
+        },
+        {
+          "title": "HOS-UI module index — APP",
+          "url": "/HOSPACK/HOS-UI/APP/README.md"
+        },
+        {
+          "title": "UI screen — cx-emerging.png",
+          "url": "/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png"
+        }
+      ],
+      "userInterface": {
+        "screens": [
+          "CX-EMERGING"
+        ],
+        "routes": [
+          "/voc#sec-emerging",
+          "→ /drill/vol/topic/<name>"
+        ],
+        "designLink": "/HOSPACK/HOS-UI/APP/ui/quality-hub.html",
+        "states": [
+          "rising cards",
+          "empty for scope",
+          "live update",
+          "upstream unavailable",
+          "mobile"
+        ],
+        "accessibility": "WCAG 2.1 AA: keyboard for every control, visible focus rings on the kale palette, aria-live for score changes and toasts, contrast ≥ 4.5:1 (ink on cream), reduced-motion respected for arcs/bars; axe in vitest (Q-65 sweeps every route)",
+        "browsers": [
+          "Chrome (latest)",
+          "Edge (latest)",
+          "Safari (latest)",
+          "Firefox (latest)"
+        ],
+        "visualBaseline": "/HOSPACK/HOS-UI/APP/ui/shots/cx-emerging.png"
+      },
+      "logging": {
+        "events": [],
+        "requiredFieldsEveryLine": [
+          "service",
+          "module",
+          "req_id",
+          "tid",
+          "persona"
+        ],
+        "neverLog": [
+          "Authorization header / raw token",
+          "transcript text or quotes (redacted or not)",
+          "rationale / note / reason bodies",
+          "raw ask queries > 200 chars (hash)",
+          "PAN/SSN/card numbers",
+          "request/response bodies",
+          "clear e-mail/phone"
+        ],
+        "retention": "30 days in Datadog; debug not shipped in prod"
+      }
+    }
+  ]
+}

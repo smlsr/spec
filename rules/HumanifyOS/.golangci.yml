@@ -1,0 +1,27 @@
+# .golangci.yml — the dependency rules of docs/ARCHITECTURE.md §2 as lint. tools/arch-lint.sh walks the import graph for the module rule.
+run: { timeout: 5m }
+linters:
+  enable: [depguard, gofmt, govet, staticcheck, errcheck, gosec, revive]
+linters-settings:
+  depguard:
+    rules:
+      pkg-common-and-contracts-import-nothing-internal:
+        files: ["**/pkg/common/**", "**/pkg/contracts/**"]
+        deny:
+          - { pkg: "bitbucket.org/ttec/humanifyos/internal", desc: "pkg/common and pkg/contracts import nothing internal" }
+          - { pkg: "bitbucket.org/ttec/humanifyos/apps", desc: "pkg/common and pkg/contracts import nothing internal" }
+          - { pkg: "bitbucket.org/ttec/humanifyos/pkg/lib", desc: "pkg/common and pkg/contracts import nothing internal" }
+      pkg-lib-imports-only-lib-and-common:
+        files: ["**/pkg/lib/**"]
+        deny:
+          - { pkg: "bitbucket.org/ttec/humanifyos/internal", desc: "pkg/lib never imports module code" }
+          - { pkg: "bitbucket.org/ttec/humanifyos/apps", desc: "pkg/lib never imports a process" }
+      no-raw-transport-in-apps:
+        files: ["**/apps/**", "**/internal/**"]
+        deny:
+          - { pkg: "github.com/nats-io/nats.go", desc: "the bus is pkg/lib/events; never nats.Connect" }
+          - { pkg: "github.com/dapr/go-sdk/client", desc: "use pkg/lib/invoke and pkg/lib/events" }
+      telemetry-vendor-only-in-obs:
+        files: ["!**/pkg/lib/obs/**", "!**/pkg/lib/log/**"]
+        deny:
+          - { pkg: "github.com/DataDog", desc: "vendor telemetry only inside pkg/lib/obs" }

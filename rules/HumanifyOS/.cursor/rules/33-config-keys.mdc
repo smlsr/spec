@@ -1,0 +1,31 @@
+---
+description: Use when adding or reading a configuration key, environment variable or secret — one section per program (HOS, HOS-UI, HOS-Admin)
+alwaysApply: false
+---
+# Config Keys
+
+One section per program; read the section of the program that owns your ticket. Every attachment of every program is below.
+
+## HOS — applies when your ticket belongs to HOS
+
+### Config Keys
+
+Keys are registered in `pkg/lib/config` and documented per module; no secret values in git; `secretRefs` in Helm.
+
+## HOS-UI — applies when your ticket belongs to HOS-UI
+
+### Config Keys
+
+Keys are registered in `pkg/lib/config` and documented per module; no secret values in git; `secretRefs` in Helm.
+
+## HOS-Admin — applies when your ticket belongs to HOS-Admin
+
+### Config Keys
+
+Keys are registered in `pkg/lib/config` and documented per module; no secret values in git; `secretRefs` in Helm.
+
+## Attached spec pages (every program)
+
+@HOSPACK/HOS/LOOM/spec/CONFIG-KEYS.md
+@HOSPACK/HOS-UI/APP/spec/CONFIG-KEYS.md
+@HOSPACK/HOS-Admin/ADMIN/spec/CONFIG-KEYS.md
